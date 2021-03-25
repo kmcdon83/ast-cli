@@ -108,7 +108,18 @@ jobs:
           key: go-mod-v1-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
-            
+  
+  kics:
+    docker:
+      - image: checkmarx/kics:latest
+    steps:
+      - checkout
+      - run:
+          name: KICS Scan
+          command: kics scan -p "./" -o "./results.json"
+      - store_artifacts:
+          path: ./results.json
+          
   publish-github-release:
     executor:
       go-container
@@ -180,6 +191,10 @@ workflows:
           filters:
             branches:
               ignore:
+      - kics:
+          filters:
+            branches:
+              ignore:      
           context: AWS
 
   release-publish-workflow:
