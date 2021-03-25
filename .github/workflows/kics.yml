@@ -1,0 +1,25 @@
+name: Django CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: KICS Github Action
+      uses: Checkmarx/kics-github-action@v1.0
+      with:
+        path: .
+        output_path: results.json
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.2
+      with:
+        name: kics
+        path: results.json
+    
